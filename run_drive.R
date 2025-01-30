@@ -7,11 +7,5 @@ run_drive <- function(state) {
   state$fp <- state$fp + yard_change
   state$fp <- max(0, min(100, state$fp)) #in bound
   return(state)
-
-  if (state$fp >= 100) {
-    state$score <- ifelse(state$fp >= 110, 3, 7)
-    } else {
-    state$score <- 0
-  }
 }
   
