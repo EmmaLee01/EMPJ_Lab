@@ -4,5 +4,5 @@ top_func <- function(downs, ytg, fp, epochs=1000) { ##top function is basically 
     scores[i] <- run_epoch(downs, ytg, fp)
     
   }
-  mean(scores) ##calculate score
+  mean(scores) ##calculate score, expected points
 }
