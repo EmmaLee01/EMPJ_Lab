@@ -1,5 +1,9 @@
-if (new_fp > 100 && new_fp <= 110) {
-    return(7)  
-  } else if (new_fp > 110 && new_fp <= 120) {
-    return(3)  
+check_score <- function(fp) {
+  if (fp > 100 && fp <= 110) {
+    return(7)  # Touchdown
+  } else if (fp > 110 && fp <= 120) {
+    return(3)  # Field goal
+  } else {
+    return(NA)  # No score
   }
+}
