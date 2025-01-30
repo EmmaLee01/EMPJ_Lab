@@ -1,6 +1,6 @@
 # Drive function
 
-run_drive <- function(state){
+run_drive <- function(down, ytg, fp) {
   max <- 100 - state$fp
   min <- -state$fp
   yard_change <- sample(min:max, 1)
