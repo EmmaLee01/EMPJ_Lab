@@ -4,9 +4,11 @@ run_epoch <- function(down, ytg, fp) {
   score <- NA       # Initialize score
   drives <- 0       # drive counter
   team <- 1         # 1 for our team, -1 for opponent
-  
+
+  state <- list(down = down, ytg = ytg, fp = fp)
+
   while (is.na(score) && drives < max_drives) {
-    state <- run_drive(down, ytg, fp)  # Simulate drive
+    state <- run_drive(state)  # Simulate drive
     score <- check_score(state)            # Check if score occurred
     if (!is.na(score)) {
       score <- team * score  # score
