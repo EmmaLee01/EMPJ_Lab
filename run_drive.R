@@ -5,7 +5,7 @@ run_drive <- function(state) {
   min_gain <- -state$fp
   yard_change <- sample(min:max, 1)
   state$fp <- state$fp + yard_change
-  state$fp <- max(0, min(100, state$fp)) #in bound
+  state$fp <- max(0, min(120, state$fp)) #in bound
   return(state)
 
   state$ytg <- max(0, state$ytg - yard_change) # ytg update
