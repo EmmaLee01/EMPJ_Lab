@@ -1,10 +1,9 @@
-run_epoch <- function(down, ytg, fp) {
+
+run_epoch <- function(state) {
   max_drives <- 10  # Limit number of drives
   score <- NA       # Initialize score
   drives <- 0       # drive counter
   team <- 1         # 1 for our team, -1 for opponent
-
-  state <- list(down = down, ytg = ytg, fp = fp)
 
   while (is.na(score) && drives < max_drives) {
     state <- run_drive(state)  # Simulate drive
