@@ -1,4 +1,3 @@
-# Function to simulate a single epoch
 run_epoch <- function(down, ytg, fp) {
   max_drives <- 10  # Limit number of drives
   score <- NA       # Initialize score
