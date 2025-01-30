@@ -7,7 +7,7 @@ run_epoch <- function(state) {
 
   while (is.na(score) && drives < max_drives) {
     state <- run_drive(state)  # Simulate drive
-    score <- check_score(state)            # Check if score occurred
+    score <- check_score(state$fp)            # Check if score occurred
     if (!is.na(score)) {
       score <- team * score  # score
     }
