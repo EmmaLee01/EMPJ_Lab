@@ -1,0 +1,5 @@
+if (new_fp > 100 && new_fp <= 110) {
+    return(7)  
+  } else if (new_fp > 110 && new_fp <= 120) {
+    return(3)  
+  }
