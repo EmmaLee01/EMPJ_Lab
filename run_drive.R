@@ -1,12 +1,14 @@
 # Drive function
 
 run_drive <- function(state) {
-  max <- 100 - state$fp
-  min <- -state$fp
+  max_gain <- 120 - state$fp
+  min_gain <- -state$fp
   yard_change <- sample(min:max, 1)
   state$fp <- state$fp + yard_change
   state$fp <- max(0, min(100, state$fp)) #in bound
   return(state)
+
+  state$ytg <- max(0, state$ytg - yard_change) # ytg update
   
   if (state$ytg <= 0) {
     state$down <- 1   # back to first down
