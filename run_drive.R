@@ -3,7 +3,7 @@
 run_drive <- function(state) {
   max_gain <- 120 - state$fp
   min_gain <- -state$fp
-  yard_change <- sample(min:max, 1)
+  yard_change <- sample(min_gain:max_gain, 1)
   state$fp <- state$fp + yard_change
   state$fp <- max(0, min(120, state$fp)) #in bound
   return(state)
