@@ -40,5 +40,5 @@ transition_matrix <- transition_matrix / rowSums(transition_matrix)
 transition_matrix[is.nan(transition_matrix)] <- 1 / n_teams
 
 # Print the transition probability matrix
-print(transition_matrix)
+head(transition_matrix)
 
