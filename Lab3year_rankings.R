@@ -64,3 +64,6 @@ print(yearly_rankings[["2023"]])
 
 
 
+##Looking at the generated graph of the Los Angeles Dodgers' performance over the years, we can see that their rankings have generally increased with a slight dip
+##in 2021. The generally indicates improved performance, though possible explanations could be roster/administration changes, better win percentages, or domantion
+##over other teams overall. 
