@@ -27,4 +27,12 @@ for(i in 1:coinpass){ ##For loop
 team_rankings<-visits/sum(visits) ##normalizing
 sort(team_rankings, decreasing = TRUE) ##putting the teams in descending order
 
-
+##Steady state
+#       HOU        LAN        NYA        TOR        BOS        TBA        CLE        SEA        CHN 
+#0.03900000 0.03873684 0.03821053 0.03678947 0.03668421 0.03657895 0.03610526 0.03568421 0.03542105 
+#       SFN        SLN        NYN        BAL        ATL        MIL        ANA        ARI        WAS 
+#0.03526316 0.03494737 0.03489474 0.03468421 0.03357895 0.03342105 0.03321053 0.03263158 0.03194737 
+#       TEX        PHI        MIN        PIT        SDN        OAK        DET        COL        KCA 
+#0.03194737 0.03178947 0.03157895 0.03147368 0.03094737 0.03021053 0.02984211 0.02978947 0.02968421 
+#       CHA        CIN        MIA 
+#0.02936842 0.02778947 0.02778947 
