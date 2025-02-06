@@ -15,14 +15,16 @@ names(visits)<-teams ## labeling
 current_team <- sample(teams, size = 1)  # Initialize with a random team
 
 
-for(i in 1:coinpass){
-  prob_dist<-transition_matrix[current_team,]
-  current_team <- sample(1:teamlen, size=1, prob=prob_dist)
-  if (i > ignore) {
+for(i in 1:coinpass){ ##For loop
+  prob_dist<-transition_matrix[current_team,] ##assigning probability distribution for new coin holder
+  current_team <- sample(1:teamlen, size=1, prob=prob_dist) ##sampling new team from specific team probability distribution
+  if (i > ignore) { ##loop for when to start adding possessions
     visits[current_team] <- visits[current_team] + 1
   }
 }
 
 ##team rankings!
-team_rankings<-visits/sum(visits)
-sort(team_rankings, decreasing = TRUE)
+team_rankings<-visits/sum(visits) ##normalizing
+sort(team_rankings, decreasing = TRUE) ##putting the teams in descending order
+
+
