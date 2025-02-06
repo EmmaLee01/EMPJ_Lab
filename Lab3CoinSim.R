@@ -12,6 +12,8 @@ coinpass<-20000 ##Number of passes
 ignore<-1000 ##number of ignores until coin counts are actually counted
 visits<-rep(0, teamlen) ##coin count vector
 names(visits)<-teams ## labeling
+current_team <- sample(teams, size = 1)  # Initialize with a random team
+
 
 for(i in 1:coinpass){
   prob_dist<-transition_matrix[current_team,]
