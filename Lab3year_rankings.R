@@ -1,3 +1,5 @@
+####Question we will be asking: "Now that we have created a steady-state vector for each year of this data, how has LAN's performance changed over the years?"
+
 library(tidyverse)
 
 game_data <- readRDS("data.rds")
