@@ -3,16 +3,15 @@ run_drive <- function(down, ytg, fp){
   # get new state
   new_state <- run_play(D, YTG, FP)
   
-  # Check if we should return the state or run a new play
+  # Check if return the state or run a new play
   if(new_state$exit_drive==0){
     
-    # if we should stay with the current drive, simply call it again with the
-    # new state
+    # call new state again if still with the current drive
     run_drive(new_state$D, new_state$YTG, new_state$FP)
     
   } else {
     
-    # otherwise, return the current state to the run_epoch function
+    # otherwise, return current state to run_epoch
     list(D=new_state$D, YTG=new_state$YTG, FP=new_state$FP)
     
   }
