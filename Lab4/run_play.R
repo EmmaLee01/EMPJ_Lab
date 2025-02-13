@@ -21,7 +21,7 @@ down_one <- function(down, ytg, fp) {
   sigma <- 1.5 
   ## mu and sigma to create distribution based on what happens on down 1 from dataset
   n <- 1
-  gain <- rlnorm(n, mu, sigma) #  Random gain from log sampling distribution
+  gain <- round(rlnorm(n, mu, sigma)) #  Random gain from log sampling distribution
   new_fp <- fp + gain
   new_ytg <- max(ytg - gain, 0)  # Adjust remaining yards for first down 
 
