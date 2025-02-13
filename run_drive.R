@@ -1,5 +1,7 @@
 # Drive function
 
+source("run_play.R")
+
 run_drive <- function(state) {
   max_gain <- 120 - state$fp
   min_gain <- -state$fp
