@@ -15,19 +15,6 @@ run_play <- function(down, ytg, fp) {
   }
 }
 
-down_one <- function(down, ytg, fp){
-  # Simulate play outcome (e.g., gain yards, turnover, etc.)
-  gain <- sample(0:10, 1)  #  Random gain between 0 and 10 yards
-  new_fp <- fp + gain
-  new_ytg <- max(10 - gain, 0)  # Adjust remaining yards for first down
-  list(fp = new_fp, ytg = new_ytg, down = 2)
-  if (new_ytg <= 0) {
-    return(list(down = 1, ytg = 10, fp = new_fp, exit_drive = 0))
-  }
-  return(list(down = 2, ytg = new_ytg, fp = new_fp, exit_drive = 0))
-}
-
-
 down_one <- function(down, ytg, fp) {
   # Simulate play outcome (e.g., gain yards, turnover, etc.)
   mu <- 1.2
@@ -44,6 +31,35 @@ down_one <- function(down, ytg, fp) {
   else
     list(down = 2, ytg = new_ytg, fp = new_fp, exit_drive = 0)
 }
+
+down_two <- function(down, ytg, fp) {
+  # Simulate play outcome (e.g., gain yards, turnover, etc.)
+  mu <- 1.2
+  sigma <- 1.5 # create distribution based on what happens on down 2 from data 
+  n <- 1
+  gain <- round(rlnorm(n, mu, sigma)) #  Random gain from sampling distribution
+  new_fp <- fp + gain
+  new_ytg <- max(ytg - gain, 0)  # Adjust remaining yards for first down 
+  if (new_ytg <= 0) {
+    list(down = 1, ytg = 10, fp = new_fp, exit_drive = 0)
+  }
+  else 
+    list(down = 3, ytg = new_ytg, fp = new_fp, exit_drive = 0)
+}
+
+down_three <- function(down, ytg, fp) {
+  # Simulate play outcome (e.g., gain yards, turnover, etc.)
+  mu <- 1.2
+  sigma <- 1.5 # create distribution based on what happens on down 3 from data
+  n <- 1
+  gain <- round(rlnorm(n, mu, sigma)) #  Random gain from sampling distribution
+  new_fp <- fp + gain
+  new_ytg <- max(ytg - gain, 0)  # Adjust remaining yards for first down 
+  if (new_ytg <= 0) {
+    list(down = 1, ytg = 10, fp = new_fp, exit_drive = 0)
+  }
+  else 
+    list(down = 4, ytg = new_ytg, fp = new_fp, exit_drive = 0)
 
 
 down_four <- function(D, YTG, FP) {  
