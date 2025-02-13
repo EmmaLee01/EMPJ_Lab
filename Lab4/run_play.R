@@ -81,15 +81,16 @@ field_goal_probability <- function(FP) {
 
 down_four <- function(D, YTG, FP) {
   
-  if (FP <= 40) {
-    play_probs <- c("go_for_it" = 0.24, "field_goal" = 0.65, "punt" = 0.11)  
-  } else if (FP <= 60) {
-    play_probs <- c("go_for_it" = 0.18, "field_goal" = 0.005, "punt" = 0.82)  
-  } else if (FP <= 80) {
-    play_probs <- c("go_for_it" = 0.12, "field_goal" = 0.000, "punt" = 0.88)  
-  } else {
-    play_probs <- c("go_for_it" = 0.035, "field_goal" = 0.70, "punt" = 0.265)  
-  }
+if (FP >= 80) {
+  play_probs <- c("go_for_it" = 0.24, "field_goal" = 0.65, "punt" = 0.11)  
+} else if (FP >= 60) {
+  play_probs <- c("go_for_it" = 0.18, "field_goal" = 0.005, "punt" = 0.82)  
+} else if (FP >= 40) {
+  play_probs <- c("go_for_it" = 0.12, "field_goal" = 0.000, "punt" = 0.88)  
+} else {
+  play_probs <- c("go_for_it" = 0.035, "field_goal" = 0.70, "punt" = 0.265)  
+}
+
   
   # Sample a play type
   play_type <- sample(names(play_probs), size = 1, prob = play_probs)
