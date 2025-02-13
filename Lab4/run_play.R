@@ -62,58 +62,71 @@ down_three <- function(down, ytg, fp) {
     list(down = 4, ytg = new_ytg, fp = new_fp, exit_drive = 0)
 
 
-down_four <- function(D, YTG, FP) {  
+field_goal_probability <- function(FP) {
   
-  if (FP <= 40) {  
-    play_probs <- c("field_goal" = 0.648, "pass" = 0.151, "run" = 0.090, "punt" = 0.048, "no_play" = 0.057, "quarter_end" = 0.004, "qb_kneel" = 0.0013)  
-  } else if (FP <= 60) {  
-    play_probs <- c("field_goal" = 0.005, "pass" = 0.115, "run" = 0.063, "punt" = 0.747,   
-                    "no_play" = 0.067, "quarter_end" = 0.003, "qb_kneel" = 0.0004)  
-  } else if (FP <= 80) {  
-    play_probs <- c("pass" = 0.045, "run" = 0.028, "punt" = 0.889, "no_play" = 0.039,   
-                    "quarter_end" = 0.0004, "qb_kneel" = 0.0004)  
-  } else {  
-    play_probs <- c("pass" = 0.027, "run" = 0.009, "punt" = 0.925, "no_play" = 0.039,   
-                    "quarter_end" = 0.0005, "qb_kneel" = 0.0005)  
-  }  
+  if (FP >= 95) {
+    return(0.99) 
+  } else if (FP >= 85) {
+    return(0.95)
+  } else if (FP >= 75) {
+    return(0.85)
+  } else if (FP >= 65) {
+    return(0.65)
+  } else if (FP >= 55) {
+    return(0.40)
+  } else {
+    return(0.10)
+  }
+}
+
+down_four <- function(D, YTG, FP) {
   
-  # Sample a play type  
-  play_type <- sample(names(play_probs), size = 1, prob = play_probs)  
+  if (FP <= 40) {
+    play_probs <- c("go_for_it" = 0.24, "field_goal" = 0.65, "punt" = 0.11)  
+  } else if (FP <= 60) {
+    play_probs <- c("go_for_it" = 0.18, "field_goal" = 0.005, "punt" = 0.82)  
+  } else if (FP <= 80) {
+    play_probs <- c("go_for_it" = 0.12, "field_goal" = 0.000, "punt" = 0.88)  
+  } else {
+    play_probs <- c("go_for_it" = 0.035, "field_goal" = 0.70, "punt" = 0.265)  
+  }
   
-  if (play_type %in% c("pass", "run")) {  
-    YG <- sample_yards(D, YTG, FP)  # Sample yards gained  
-    FP <- FP + YG  
-    new_YTG <- max(YTG - YG, 0)  
-    
-    if (new_YTG == 0) {  
-      exit_drive <- 0  # Continue drive (first down achieved)  
-    } else {  
-      exit_drive <- 1  # Turnover 4th down (possession changes)  
-    }  
-    
-    YTG <- new_YTG  
-  } else if (play_type == "punt") {  
-    FP <- max(FP - sample(35:50, 1), 0)  # Typical punt distance  
-    YTG <- 10  
-    D <- 1  
-    exit_drive <- 1  # Switch possession  
-  } else if (play_type == "field_goal") {  
-    FG_made <- rbinom(1, 1, field_goal_probability(FP))  # Check if FG is successful  
-    
-    if (FG_made == 1) {  
-      FP <- 115  
-    }  
-    
-    YTG <- 10  
-    D <- 1  
-    exit_drive <- 1  # End possession  
-  } else {  # Covers no play, quarter end, and qb kneel  
-    if (play_type == "quarter_end") {  
-      exit_drive <- 0  # Continue drive  
-    } else {  
-      exit_drive <- 1  # End possession  
-    }  
-  }  
+  # Sample a play type
+  play_type <- sample(names(play_probs), size = 1, prob = play_probs)
+  print(paste("Play selected:", play_type)) 
   
-  list(D = D, YTG = YTG, FP = FP, exit_drive = exit_drive)  
+  if (play_type == "go_for_it") {
+    YG <- sample(0:YTG, 1)  # Simulated yards gained
+    FP <- FP + YG
+    new_YTG <- max(YTG - YG, 0)
+    
+    if (new_YTG == 0) {
+      exit_drive <- 0  # First down achieved
+    } else {
+      exit_drive <- 1  # Turnover on downs
+    }
+    
+    YTG <- new_YTG
+    D <- 1  # Reset down after conversion/turnover
+    
+  } else if (play_type == "punt") {
+    punt_distance <- sample(35:50, 1)  # Typical punt range
+    FP <- max(FP - punt_distance, 0)
+    YTG <- 10
+    D <- 1
+    exit_drive <- 1  # Change possession
+    
+  } else if (play_type == "field_goal") {
+    FG_made <- rbinom(1, 1, field_goal_probability(FP))  # Simulate FG attempt
+    
+    if (FG_made == 1) {
+      FP <- 115
+    } 
+    
+    YTG <- 10
+    D <- 1
+    exit_drive <- 1  # End possession after FG attempt
+  }
+  
+  list(D = D, YTG = YTG, FP = FP, exit_drive = exit_drive)
 }
