@@ -2,19 +2,6 @@
 
 # Run play file 
 
-# Different down functions
-
-down_one <- function(fp, ytg) {
-  # Simulate play outcome (e.g., gain yards, turnover, etc.)
-  gain <- sample(0:10, 1)  #  Random gain between 0 and 10 yards
-  new_position <- fp + gain
-  new_distance <- max(10 - gain, 0)  # Adjust remaining yards for first down
-  list(fp = new_position, ytg = new_distance, down = 2)
-}
-## Possible down function ^
-
-
-
 
 run_play <- function(down, ytg, fp) {
   if (down == 1) {
@@ -40,6 +27,23 @@ down_one <- function(down, ytg, fp){
   return(list(down = 2, ytg = new_ytg, fp = new_fp, exit_drive = 0))
 }
 
+
+down_one <- function(down, ytg, fp) {
+  # Simulate play outcome (e.g., gain yards, turnover, etc.)
+  mu <- 1.2
+  sigma <- 1.5 
+  ## mu and sigma to create distribution based on what happens on down 1 from dataset
+  n <- 1
+  gain <- rlnorm(n, mu, sigma) #  Random gain from log sampling distribution
+  new_fp <- fp + gain
+  new_ytg <- max(ytg - gain, 0)  # Adjust remaining yards for first down 
+
+  if (new_ytg <= 0) {
+    list(down = 1, ytg = 10, fp = new_fp, exit_drive = 0) # 
+  }
+  else
+    list(down = 2, ytg = new_ytg, fp = new_fp, exit_drive = 0)
+}
 
 
 down_four <- function(D, YTG, FP) {  
