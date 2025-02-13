@@ -33,7 +33,7 @@ down_one <- function(down, ytg, fp){
   gain <- sample(0:10, 1)  #  Random gain between 0 and 10 yards
   new_fp <- fp + gain
   new_ytg <- max(10 - gain, 0)  # Adjust remaining yards for first down
-  list(fp = new_position, ytg = new_distance, down = 2)
+  list(fp = new_fp, ytg = new_ytg, down = 2)
   if (new_ytg <= 0) {
     return(list(down = 1, ytg = 10, fp = new_fp, exit_drive = 0))
   }
