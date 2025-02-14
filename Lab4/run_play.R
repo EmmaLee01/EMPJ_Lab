@@ -89,7 +89,7 @@ if (FP >= 80 & FP <= 100) {  # Opponent’s red zone
   play_probs <- c("go_for_it" = 0.178, "field_goal" = 0.005, "punt" = 0.747)  
 } else {  # Own side of the field (1-40)
   play_probs <- c("go_for_it" = 0.064, "field_goal" = 0.000, "punt" = 0.897) 
-
+}
 
   
   # Sample a play type
