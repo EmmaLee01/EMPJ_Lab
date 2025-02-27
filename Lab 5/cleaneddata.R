@@ -9,4 +9,5 @@ footballsub3<-footballsub2[footballsub2$play_type=="pass"|
                               footballsub2$play_type=="field_goal"|
                               footballsub2$play_type=="punt",]
 footballclean<-na.omit(footballsub3)
+
 footballclean
