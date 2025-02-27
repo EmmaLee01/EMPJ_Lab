@@ -27,3 +27,16 @@ library(nnet)
 multi_model <- multinom(play_type ~ yardline_100 + ydstogo, data = footballclean)
 
 summary(multi_model)
+
+
+
+
+
+fthdpredict<-function(FP, YTG){
+  newdata<-data.frame(yardline_100 = FP, ydstogo=FP)
+  
+  probs<-predict(multi_model, newdata = newdata, type="probs")
+probs    
+}
+
+
