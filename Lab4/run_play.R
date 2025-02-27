@@ -79,19 +79,19 @@ field_goal_probability <- function(FP) {
   }
 }
 
+
+
+fthdpredict<-function(FP, YTG){
+  newdata<-data.frame(yardline_100 = FP, ydstogo=FP)
+  
+  probs<-predict(multi_model, newdata = newdata, type="probs")
+probs    
+}
+  
 down_four <- function(D, YTG, FP) {
   
-if (FP >= 80 & FP <= 100) {  # Opponent’s red zone
-  play_probs <- c("go_for_it" = 0.231, "field_goal" = 0.717, "punt" = 0.052)  
-} else if (FP >= 60 & FP < 80) {  # Opponent’s territory
-  play_probs <- c("go_for_it" = 0.251, "field_goal" = 0.589, "punt" = 0.089)  
-} else if (FP >= 40 & FP < 60) {  # Midfield
-  play_probs <- c("go_for_it" = 0.178, "field_goal" = 0.005, "punt" = 0.747)  
-} else {  # Own side of the field (1-40)
-  play_probs <- c("go_for_it" = 0.064, "field_goal" = 0.000, "punt" = 0.897) 
-}
+  play_probs <- fthdpredict(FP, YTG) 
 
-  
   # Sample a play type
   play_type <- sample(names(play_probs), size = 1, prob = play_probs)
   print(paste("Play selected:", play_type)) 
