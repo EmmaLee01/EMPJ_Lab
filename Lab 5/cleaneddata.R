@@ -1,3 +1,65 @@
+down_four <- function(D, YTG, FP, model) {
+  
+  if (FP >= 80 & FP <= 100) {  # Opponent’s red zone
+    play_probs <- c("go_for_it" = 0.231, "field_goal" = 0.717, "punt" = 0.052)  
+  } else if (FP >= 60 & FP < 80) {  # Opponent’s territory
+    play_probs <- c("go_for_it" = 0.251, "field_goal" = 0.589, "punt" = 0.089)  
+  } else if (FP >= 40 & FP < 60) {  # Midfield
+    play_probs <- c("go_for_it" = 0.178, "field_goal" = 0.005, "punt" = 0.747)  
+  } else {  # Own side of the field (1-40)
+    play_probs <- c("go_for_it" = 0.064, "field_goal" = 0.000, "punt" = 0.897) 
+  }
+  
+  
+  # Sample a play type
+  play_type <- sample(names(play_probs), size = 1, prob = play_probs)
+  print(paste("Play selected:", play_type)) 
+  
+  if (play_type == "go_for_it") {
+    YG <- sample(0:YTG, 1)  # Simulated yards gained
+    FP <- FP + YG
+    new_YTG <- max(YTG - YG, 0)
+    
+    if (new_YTG == 0) {
+      exit_drive <- 0  # First down achieved
+    } else {
+      exit_drive <- 1  # Turnover on downs
+    }
+    
+    YTG <- new_YTG
+    D <- 1  # Reset down after conversion/turnover
+    
+  } else if (play_type == "punt") {
+    punt_distance <- sample(35:50, 1)  # Typical punt range
+    FP <- max(FP - punt_distance, 0)
+    YTG <- 10
+    D <- 1
+    exit_drive <- 1  # Change possession
+    
+  } else if (play_type == "field_goal") {
+    FG_made <- rbinom(1, 1, field_goal_probability(FP))  # Simulate FG attempt
+    
+    if (FG_made == 1) {
+      FP <- 115
+    } 
+    
+    YTG <- 10
+    D <- 1
+    exit_drive <- 1  # End possession after FG attempt
+  }
+  
+  list(D = D, YTG = YTG, FP = FP, exit_drive = exit_drive)
+}
+}
+
+
+
+
+
+
+
+
+
 footballsub<- footballdata[c(12,19,22,26,29,30)]
 footballsub2<-footballsub[footballsub$drive==4,]
 
@@ -27,3 +89,19 @@ library(nnet)
 multi_model <- multinom(play_type ~ yardline_100 + ydstogo, data = footballclean)
 
 summary(multi_model)
+
+
+
+
+
+set.seed(42)
+down_four(D = 4, YTG = 5, FP = 35, model = multi_model)
+
+set.seed(42)
+down_four(D = 4, YTG = 10, FP = 20, model = multi_model)
+
+set.seed(42)
+down_four(D = 4, YTG = 1, FP = 50, model = multi_model)
+
+set.seed(42)
+down_four(D = 4, YTG = 5, FP = 95, model = multi_model)
