@@ -1,6 +1,7 @@
+##pt2
 nhldata<-read.csv("nhl_pbp20162017.csv")
 
-nhlsub<-nhldata[c(1, 6, 7, 8, 11, 12, 54, 55)]
+nhlsub<-nhldata[c(1, 5, 6, 7, 8, 11, 12, 54, 55)]
 
 
 
@@ -22,12 +23,23 @@ define_region <- function(x, y) {
 
 
 
-shot_types <- c("SLAP SHOT", "WRIST SHOT", "BACKHAND","SNAP SHOT", "DEFLECTED","TIP-IN","WRAP-AROUND")
+
+shot_types <- c("SLAP SHOT", "WRIST SHOT")
 nhlsub$Shots <- ifelse(nhlsub$Type %in% shot_types, 1, 0)
 
 nhlsub$region <- mapply(define_region, nhlsub$xC, nhlsub$yC)
 shot_model <- glm(Shots ~ region, data = nhlsub, family = poisson())
 
+
+##pt3
+nhlsub$ifGoal <- ifelse(nhlsub$Event=="GOAL", 1, 0)
+
+
+
+#nhlsub2<-nhldata[nhldata$Event=="GOAL",]
+#nhlsub2<-nhlsub2[c(1, 5, 6, 7, 8, 11, 12, 54, 55)]
+
+new_shot_model <- glm(ifGoal ~ region, data = nhlsub, family = poisson())
 
 
 
