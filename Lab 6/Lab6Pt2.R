@@ -22,8 +22,7 @@ define_region <- function(x, y) {
 
 
 
-
-shot_types <- c("SLAP SHOT", "WRIST SHOT")
+shot_types <- c("SLAP SHOT", "WRIST SHOT", "BACKHAND","SNAP SHOT", "DEFLECTED","TIP-IN","WRAP-AROUND")
 nhlsub$Shots <- ifelse(nhlsub$Type %in% shot_types, 1, 0)
 
 nhlsub$region <- mapply(define_region, nhlsub$xC, nhlsub$yC)
