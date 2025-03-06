@@ -1,4 +1,4 @@
-##pt2
+##pt2 PLEASE NOTE THIS ALSO INCLUDES PART 3
 nhldata<-read.csv("nhl_pbp20162017.csv")
 
 nhlsub<-nhldata[c(1, 5, 6, 7, 8, 11, 12, 54, 55)]
