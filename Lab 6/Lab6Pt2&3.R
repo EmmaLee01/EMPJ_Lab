@@ -1,4 +1,5 @@
-##pt2 PLEASE NOTE THIS ALSO INCLUDES PART 3
+## pt2 PLEASE NOTE THIS ALSO INCLUDES PART 3
+
 nhldata<-read.csv("nhl_pbp20162017.csv")
 
 nhlsub<-nhldata[c(1, 5, 6, 7, 8, 11, 12, 54, 55)]
@@ -43,6 +44,7 @@ nhlsub$ifGoal <- ifelse(nhlsub$Event=="GOAL", 1, 0)
 new_shot_model <- glm(ifGoal ~ region, data = nhlsub, family = poisson())
 
 
+## Bonus extra model looking at goal occurrences based on shot type
 
 nhlsub2<-nhlsub[nhlsub$Type %in% shot_types,]
 nsm<-glm(ifGoal~factor(Type), data = nhlsub2, family = binomial())
