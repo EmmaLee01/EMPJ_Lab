@@ -20,7 +20,7 @@
 library(dplyr)
 library(stringr)
 
-### Summary for passing plays 
+### Summary for pass/run plays 
 
 play_summary <- football_data2014 %>%
   filter(play_type %in% c("run", "pass")) %>%
@@ -92,7 +92,9 @@ print(run_summary)
 ### Total Summary - Starting with Field position, then Play type (pass/run), 
 ### then outcomes (complete, incomplete, interception, fumble)
 
-combined_summary <- football_data2014 %>%
+
+combined_pass_run_summary <- football_data2014 %>%
+  filter(play_type %in% c("run", "pass")) %>%
   mutate(
     yrdln_clean = as.numeric(str_extract(yrdln, "\\d+")),
     red_zone = ifelse(str_detect(yrdln, defteam) & yrdln_clean <= 20, "Red Zone", "Non-Red Zone")
@@ -103,12 +105,12 @@ combined_summary <- football_data2014 %>%
     avg_yards = mean(yards_gained, na.rm = TRUE),
     
     # For passes: Incomplete, Complete, Interception
-    incompletions = sum(incomplete == 1, na.rm = TRUE),
-    completions = sum(complete == 1, na.rm = TRUE),
+    incompletions = sum(incomplete_pass == 1, na.rm = TRUE),
+    completions = sum(complete_pass == 1, na.rm = TRUE),
     interceptions = sum(interception == 1, na.rm = TRUE),
     
     # For runs: Fumbles
-    fumbles = ifelse(play_type == "run", sum(fumble, na.rm = TRUE), NA)
+    fumbles = sum(fumble_lost == 1, na.rm = TRUE)
   ) %>%
   # Add fumble percentage for runs
   mutate(
@@ -124,4 +126,6 @@ combined_summary <- football_data2014 %>%
   )
 
 # Display combined summary
-print(combined_summary)
+print(combined_pass_run_summary)
+
+
