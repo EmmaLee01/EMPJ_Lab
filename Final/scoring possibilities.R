@@ -1,3 +1,8 @@
+library(tidyverse)
+library(mixtools)
+footballdata <- readRDS('/Users/zhaoshibo/Desktop/STAT4800/pbp2014-2024.rds')
+
+
 fourth_down_plays <- footballdata %>%
   filter(
     down == 4,
