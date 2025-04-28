@@ -7,6 +7,9 @@ footballsub<- footballdata[c(12,19,22,26,29,30, 37)]
 attach(footballsub)
 yardfilter<-subset(footballsub, yards_gained>0)
 yards<-yardfilter$yards_gained
+  
+
+
 
 
 
