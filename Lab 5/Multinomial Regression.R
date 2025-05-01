@@ -1,4 +1,4 @@
-
+footballdata<-pfp_data
 footballsub<- footballdata[c(12,19,22,26,29,30)]
 footballsub2<-footballsub[footballsub$drive==4,]
 

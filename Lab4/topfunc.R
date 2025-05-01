@@ -7,3 +7,4 @@ top_func <- function(downs, ytg, fp, epochs=1000) { ##top function is basically 
   }
   mean(scores) ##calculate score, expected points
 }
+

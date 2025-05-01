@@ -1,5 +1,5 @@
 library(dplyr)
-pbp_data <- readRDS('/Users/zhaoshibo/Desktop/STAT4800/pbp2014-2024.rds')
+#pbp_data <- readRDS('/Users/zhaoshibo/Desktop/STAT4800/pbp2014-2024.rds')
 fg_data <- pbp_data %>% 
   filter(play_type == "field_goal") %>% 
   mutate(FG_made = ifelse(field_goal_result == "made", 1, 0)) #filter out
@@ -64,5 +64,4 @@ down_four <- function(D, YTG, FP) {
   }
   
   list(D = D, YTG = YTG, FP = FP, exit_drive = exit_drive)
-}
 }

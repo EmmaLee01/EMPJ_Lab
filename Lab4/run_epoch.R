@@ -1,4 +1,4 @@
-
+#source("check_score.R")
 run_epoch <- function(state) {
   max_drives <- 10  # Limit number of drives
   score <- NA       # Initialize score

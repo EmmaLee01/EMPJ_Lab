@@ -21,7 +21,7 @@ down_one <- function(down, ytg, fp) {
   sigma <- 1.5 
   ## mu and sigma to create distribution based on what happens on down 1 from dataset
   n <- 1
-  gain <- round(rlnorm(n, mu, sigma)) #  Random gain from log sampling distribution
+  gain <- round(sample_yards(1, mix_model)) #  Random gain from log sampling distribution
   new_fp <- fp + gain
   new_ytg <- max(ytg - gain, 0)  # Adjust remaining yards for first down 
 
@@ -37,7 +37,7 @@ down_two <- function(down, ytg, fp) {
   mu <- 1.2
   sigma <- 1.5 # create distribution based on what happens on down 2 from data 
   n <- 1
-  gain <- round(rlnorm(n, mu, sigma)) #  Random gain from sampling distribution
+  gain <- round(sample_yards(1, mix_model)) #  Random gain from sampling distribution
   new_fp <- fp + gain
   new_ytg <- max(ytg - gain, 0)  # Adjust remaining yards for first down 
   if (new_ytg <= 0) {
@@ -52,7 +52,7 @@ down_three <- function(down, ytg, fp) {
   mu <- 1.2
   sigma <- 1.5 # create distribution based on what happens on down 3 from data
   n <- 1
-  gain <- round(rlnorm(n, mu, sigma)) #  Random gain from sampling distribution
+  gain <- round(sample_yards(1, mix_model)) #  Random gain from sampling distribution
   new_fp <- fp + gain
   new_ytg <- max(ytg - gain, 0)  # Adjust remaining yards for first down 
   if (new_ytg <= 0) {
@@ -97,7 +97,8 @@ down_four <- function(D, YTG, FP) {
   print(paste("Play selected:", play_type)) 
   
   if (play_type == "go_for_it") {
-    YG <- sample(0:YTG, 1)  # Simulated yards gained
+    YG <- round(sample_yards(1, mix_model))  # Simulated yards gained
+    YG <- max(YG, 0)  # no negative yards
     FP <- FP + YG
     new_YTG <- max(YTG - YG, 0)
     

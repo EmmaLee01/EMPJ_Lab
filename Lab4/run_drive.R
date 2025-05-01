@@ -17,11 +17,26 @@ run_drive <- function(state) {
     state$down <- state$down + 1  # Increment down
   }
   
+  # If 4th down, use model
   if (state$down > 4) {
-    state$down <- 1  # first down opponent
-    state$ytg <- 10
-    state$fp <- 100 - state$fp  # Flip field position
+    result <- handle_fourth_down(down = state$down, ytg = state$ytg, fp = state$fp, multi_model = your_model)
+    
+    if (result$event == "FIRST_DOWN") {
+      state$fp <- state$fp + result$yards
+      state$ytg <- 10
+      state$down <- 1
+      state$event <- "PLAY"
+    } else if (result$event == "TURNOVER_ON_DOWNS") {
+      state$event <- "TURNOVER_ON_DOWNS"
+    } else if (result$event == "FIELD_GOAL_ATTEMPT") {
+      state$event <- "FIELD_GOAL_ATTEMPT"
+      state$points <- result$points
+    } else if (result$event == "PUNT") {
+      state$event <- "PUNT"
+      state$fp <- result$new_fp
+    }
+    
+    return(state)
   }
-  return(state)
-}
-  
+  }
+
