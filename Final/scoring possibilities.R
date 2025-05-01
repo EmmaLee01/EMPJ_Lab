@@ -16,9 +16,10 @@ fourth_down_plays <- footballdata %>%
 
 
 attempt_field_goal <- function(fp) {
-  prob <- field_goal_probability(fp)
+  kick_distance <- 100 - fp + 17
+  prob <- field_goal_probability(kick_distance)
   made <- rbinom(1, 1, prob)
-  return(ifelse(made == 1, 3, 0))  # return 3 points if made, else 0
+  return(ifelse(made == 1, 3, 0))
 }
 
 
