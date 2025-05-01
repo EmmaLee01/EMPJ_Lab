@@ -5,5 +5,23 @@ predict(success_model, newdata = data.frame(ydstogo = 2, yardline_100 = 50), typ
 
 
 
+simulate_ep <- function(play_type, FP, YTG, reps = 100) {
+  results <- replicate(reps, {
+    state <- list(fp = FP, down = 4, ytg = YTG, event = NA, points = 0)
+    result <- simulate_drive_custom(state, forced_play = play_type)
+    result$points
+  })
+  mean(results)
+}
 
+ep_go <- simulate_ep("go_for_it", FP = 45, YTG = 4)
+ep_punt <- simulate_ep("punt", FP = 45, YTG = 4)
+ep_fg <- simulate_ep("field_goal", FP = 45, YTG = 4)
+p_success <- estimated_prob_from_data  
 
+# Use EV formula
+ev_actual <- p_success * ep_go + (1 - p_success) * ep_fail
+
+#Show plots of EP vs FP & YTG
+#Show where risk-adjusted deviations make sense
+#
