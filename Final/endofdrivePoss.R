@@ -32,53 +32,35 @@ field_goal_probability <- function(FP) {
 
 ## function from logistic regression file
 
-## Punts
+## Punts & returns - gives final field position for next drive
 
-library(tidyverse)
+library(ggplot2)
+library(dplyr)
 
-set.seed(42)
-n <- 1000
-
-# Helper function to simulate outcomes for each zone
-simulate_punts <- function(n, mean_dist, sd_dist, touchback_prob, zone_label) {
+simulate_punts <- function(n, fp, mean_dist, sd_dist, zone_label) {
   punt_distance <- rnorm(n, mean = mean_dist, sd = sd_dist)
   punt_distance <- pmax(punt_distance, 0)
   
-  # Determine if touchback occurs
-  touchback <- rbinom(n, size = 1, prob = touchback_prob)
+  # Raw landing spot from receiving team's end zone
+  raw_landing <- fp - punt_distance
   
-  # If not a touchback, simulate return or fair catch
-  return_type <- ifelse(touchback == 1, "Touchback",
+  # Touchback if punt lands beyond the end zone
+  touchback <- raw_landing < 0
+  
+  # Return type based only on distance and no random touchback chance
+  return_type <- ifelse(touchback, "Touchback",
                         ifelse(punt_distance > 40,
-                               ifelse(runif(length(punt_distance)) < 0.7, "Return", "Fair Catch"),
+                               ifelse(runif(n) < 0.7, "Return", "Fair Catch"),
                                "Fair Catch"))
   
-  tibble(
-    zone = zone_label,
-    punt_distance = punt_distance,
-    touchback = touchback,
-    result = return_type
-  )
+  # Return yards only if it's a return
+  return_yards <- ifelse(return_type == "Return", pmax(rnorm(n, mean = 7, sd = 1.5), 0), 0)
+  
+  # Final field position
+  final_position <- ifelse(touchback, 20,
+                           pmin(pmax(raw_landing + return_yards, 1), 99))
+  
 }
-
-# Simulate each zone
-punts_0_40 <- simulate_punts(n, 46, 6, 0.02, "0–40")
-punts_40_50 <- simulate_punts(n, 42, 5, 0.05, "40–50")
-punts_50_60 <- simulate_punts(n, 38, 4, 0.15, "50–60")
-
-# Combine all into one dataframe
-punt_data <- bind_rows(punts_0_40, punts_40_50, punts_50_60)
-
-# Quick view of result frequencies
-table(punt_data$zone, punt_data$result)
-
-ggplot(punt_data, aes(x = punt_distance, fill = result)) +
-  geom_histogram(binwidth = 1, position = "stack") +
-  labs(title = "Distribution of Return Types by Punt Distance",
-       x = "Punt Distance (yards)", y = "Count") +
-  theme_minimal()
-
-## Return data ###
 
 
 ## Interceptions & Fumbles
