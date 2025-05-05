@@ -1,3 +1,4 @@
+
 library(mixtools)
 library(tidyverse)
 library(stats)
@@ -6,14 +7,14 @@ library(stats)
 football_data2014 <- read_rds("/Users/zhaoshibo/Desktop/STAT4800/pbp2014-2024.rds")
 
 # Logistic model for field goal probability
-fg_data <- football_data2014 %>% 
-  filter(play_type == "field_goal") %>% 
+football_data2014 <- football_data2014 %>%
   mutate(FG_made = ifelse(field_goal_result == "made", 1, 0))
 
-football_data2014$FG_made <- ifelse(football_data2014$field_goal_result == "made", 1, 0)
-football_data2014$kick_distance <- 100 - football_data2014$yardline_100 + 17
+# FG model (trained on actual FG attempts)
+fg_data <- football_data2014 %>% 
+  filter(play_type == "field_goal")
 
-fg_model <- glm(FG_made ~ kick_distance, family = binomial, data = football_data2014)
+fg_model <- glm(FG_made ~ kick_distance, family = binomial, data = fg_data)
 
 field_goal_probability <- function(kick_distance) {
   log_odds <- predict(fg_model, newdata = data.frame(kick_distance = kick_distance))
@@ -67,7 +68,8 @@ simulate_punt <- function(fp) {
 
 # Field goal outcome
 attempt_field_goal <- function(fp) {
-  kick_distance <- 100 - fp + 17
+  # Use raw kick_distance from data convention
+  kick_distance <- fp
   prob <- field_goal_probability(kick_distance)
   made <- rbinom(1, 1, prob)
   return(ifelse(made == 1, 3, 0))
@@ -151,7 +153,7 @@ simulate_ep <- function(play_type, FP, YTG, reps = 100) {
 }
 
 # Example simulation
-FP <- 
+FP <- 95
 YTG <- 5
 p_success <- predict(success_model, newdata = data.frame(ydstogo = YTG, yardline_100 = FP), type = "response")
 ep_go <- simulate_ep("go_for_it", FP, YTG)
@@ -176,24 +178,19 @@ cat("Break-even probability (Go):", round(p_star, 3), "\n")
 
 
 
-run_decision_simulation <- function(FP, YTG, reps = 1000) {
+run_decision_simulation <- function(FP, YTG, reps = 500) {
   p_success <- predict(success_model, newdata = data.frame(ydstogo = YTG, yardline_100 = FP), type = "response")
-  
-  # Simulate success: 1st and 10 from FP + YTG
   ep_success <- mean(replicate(reps, simulate_drive(start_fp = min(FP + YTG, 100))$points))
-  
-  # Simulate failure: opponent drive from same field location (flipped)
   ep_fail <- mean(replicate(reps, simulate_drive(start_fp = 100 - FP)$points))
-  
-  # Expected points from going for it
   ep_go <- p_success * ep_success + (1 - p_success) * ep_fail
   
-  # Alternative: Punt if < 60, FG otherwise
   if (FP < 60) {
-    ep_alt <- mean(replicate(reps, simulate_punt(FP)))  # already opponent's EP
+    ep_alt <- mean(replicate(reps, simulate_punt(FP)))
     alt_type <- "Punt"
   } else {
-    ep_alt <- mean(replicate(reps, attempt_field_goal(FP)))  # our EP
+    kick_distance <- FP  # already correct in your data
+    prob <- field_goal_probability(kick_distance)
+    ep_alt <- 3 * prob
     alt_type <- "Field Goal"
   }
   
@@ -208,7 +205,6 @@ run_decision_simulation <- function(FP, YTG, reps = 1000) {
 }
 
 
-run_decision_simulation(FP = 45, YTG = 2)
 scenarios <- expand.grid(
   FP = 1:99,       # exclude 0 and 100
   YTG = 1:10
@@ -223,11 +219,14 @@ library(ggplot2)
 
 ggplot(results_full, aes(x = FP, fill = Best_Decision)) +
   geom_bar(position = "stack") +
-  facet_wrap(~ YTG, ncol = 2) +
+  facet_wrap(~ YTG, ncol = 2, drop = FALSE) +
   labs(title = "Best 4th Down Decision by Field Position and Yards to Go",
        x = "Field Position",
        y = "Count of Scenarios") +
-  scale_fill_manual(values = c("Go For It" = "green", "Punt" = "blue", "Field Goal" = "orange")) +
+  scale_fill_manual(
+    values = c("Go For It" = "green", "Punt" = "blue", "Field Goal" = "orange"),
+    drop = FALSE
+  ) +
   theme_minimal()
 
 
