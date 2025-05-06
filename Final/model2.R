@@ -185,12 +185,12 @@ run_decision_simulation <- function(FP, YTG, reps = 500) {
   ep_go <- p_success * ep_success - (1 - p_success) * ep_fail
   
   if (FP < 60) {
-    ep_alt <- mean(replicate(reps, simulate_punt(FP)))
+    ep_alt <- mean(replicate(reps, simulate_punt(FP))) 
     alt_type <- "Punt"
   } else {
     kick_distance <- 100-FP+17
-    prob <- field_goal_probability(kick_distance)
-    ep_alt <- 3 * prob
+    prob <- field_goal_probability(kick_distance) 
+    ep_alt <- 3 * prob - (1-prob)*(ep_fail)
     alt_type <- "Field Goal"
   }
   
