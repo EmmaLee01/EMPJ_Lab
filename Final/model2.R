@@ -2,9 +2,10 @@
 library(mixtools)
 library(tidyverse)
 library(stats)
+library(ggplot2)
 
 # Load your data
-football_data2014 <- read_rds("/Users/zhaoshibo/Desktop/STAT4800/pbp2014-2024.rds")
+#football_data2014 <- read_rds("/Users/zhaoshibo/Desktop/STAT4800/pbp2014-2024.rds")
 
 # Logistic model for field goal probability
 football_data2014 <- football_data2014 %>%
@@ -68,8 +69,7 @@ simulate_punt <- function(fp) {
 
 # Field goal outcome
 attempt_field_goal <- function(fp) {
-  # Use raw kick_distance from data convention
-  kick_distance <- fp
+  kick_distance <- 100 - fp + 17  
   prob <- field_goal_probability(kick_distance)
   made <- rbinom(1, 1, prob)
   return(ifelse(made == 1, 3, 0))
@@ -182,13 +182,13 @@ run_decision_simulation <- function(FP, YTG, reps = 500) {
   p_success <- predict(success_model, newdata = data.frame(ydstogo = YTG, yardline_100 = FP), type = "response")
   ep_success <- mean(replicate(reps, simulate_drive(start_fp = min(FP + YTG, 100))$points))
   ep_fail <- mean(replicate(reps, simulate_drive(start_fp = 100 - FP)$points))
-  ep_go <- p_success * ep_success + (1 - p_success) * ep_fail
+  ep_go <- p_success * ep_success - (1 - p_success) * ep_fail
   
   if (FP < 60) {
     ep_alt <- mean(replicate(reps, simulate_punt(FP)))
     alt_type <- "Punt"
   } else {
-    kick_distance <- FP  # already correct in your data
+    kick_distance <- 100-FP+17
     prob <- field_goal_probability(kick_distance)
     ep_alt <- 3 * prob
     alt_type <- "Field Goal"
@@ -215,7 +215,6 @@ library(dplyr)
 
 results_full <- map2_dfr(scenarios$FP, scenarios$YTG, ~ run_decision_simulation(.x, .y, reps = 100))
 
-library(ggplot2)
 
 ggplot(results_full, aes(x = FP, fill = Best_Decision)) +
   geom_bar(position = "stack") +
@@ -228,5 +227,4 @@ ggplot(results_full, aes(x = FP, fill = Best_Decision)) +
     drop = FALSE
   ) +
   theme_minimal()
-
 
