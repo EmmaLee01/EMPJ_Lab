@@ -4,12 +4,15 @@ title: When should coaches deviate most from the play that gives the most expect
 author: "Emily Arbieto, Maxwell Elim, Paul (Shibo) Zhao, Jason Chen"
 date: "2025-05-06"
 output: pdf_document
+header-includes: \usepackage{setspace}\doublespacing
 ---
 
 ```{r setup, include=FALSE}
 library(knitr)
 knitr::opts_chunk$set(echo = TRUE)
-
+library(viridis)
+library(ggplot2)
+library(tidyr)
 ```
 
 
@@ -85,6 +88,40 @@ Our simulation framework models each option’s success rate and corresponding E
 
 ## Results
 
+```{r, include=F}
+results_full1<-read.csv("results_full.csv")
+results_full1[-1]
+
+
+```
+```{r, echo = F}
+
+ggplot(results_full1, aes(x = FP, fill = Best_Decision)) +
+  geom_bar(position = "stack") +
+  facet_wrap(~ YTG, ncol = 2, drop = FALSE) +
+  labs(title = "Best 4th Down Decision by Field Position and Yards to Go",
+       x = "Field Position",
+       y = "Count of Scenarios") +
+  scale_fill_manual(
+    values = c("Go For It" = "#FCD61F", "Punt" = "#62ccc8", "Field Goal" = "#284051"),
+    drop = FALSE
+  ) +
+  theme_minimal()
+
+ggplot(results_full1, aes(x = Best_Decision, fill = Best_Decision)) +
+  geom_bar() +
+  scale_fill_manual(
+    values = c("Go For It" = "#FCD61F", "Punt" = "#62ccc8", "Field Goal" = "#284051"),
+    drop = FALSE
+  ) +
+  labs(title = "Frequency of Best Decisions", x = "Best Decision", y = "Count") +
+  theme_minimal() +
+  theme(legend.position = "none") 
+  
+
+```
+
+
 
 
   From the visualization, punt is usually preferred at poor field position, mostly less than 50, which  reflects the high risk of giving the opponent strong field position. Go for it emerges as the best option in a narrow window, usually between FP 55 and 70, and only when YTG is low. The green zone mostly appears when the yard to go is between 1 to 4, and less likely when the YTG is higher. Then as field position advances further into opponent territory, usually past the 70 yard line, field goals become increasingly favored, especially when YTG is moderate to high. So in this sense, the probability of converting a 4th down is not high enough to justify the risk, while a field goal offers a decent chance at guaranteed points.
@@ -94,6 +131,25 @@ Our simulation framework models each option’s success rate and corresponding E
   This tendency toward risk aversion naturally leads to measurable opportunity cost, which is the value lost when a team opts for a safer but sub optimal choice. Across all fourth down scenarios, when the ball is in the midfield or opponent’s territory makes the opportunity cost look more significant. By risk aversion, the team might choose “field goal” or “punt” even when the expected point of “go-for-it” is higher because of the higher risk and larger distribution of variance, but consistently choosing the conservative play accumulates lost value over the season. While a single play may not swing a game, repeated small opportunity costs compound and can influence win probabilities over time. 
 
 
+\newpage
+
+## Conclusion
+
+
+\newpage
+
+## Limitations
+
+When examining a question like “should we deviate,” both field position and yards-to-go are key factors, but typically there are other measures that come to mind when it comes to decision-making. If we had more time/resources it would have been interesting to examine score differential as well as time and their influence on risk. For example, with less time on the clock and a high score differential, coaches may be more likely to go for riskier plays. Introducing score/time adds hundreds of unique game scenarios. For each, you'd need to simulate all options and weigh them, massively increasing computation and variance. Our goal is to explore when coaches should deviate from the most EP-optimal play based on risk of failure, not to fully replicate a game clock or strategy tree. Including time and score would risk burying that insight under too many conditionals.
+	
+	
+Additionally, our plays are assumed to be independent of one another. In reality, momentum, player fatigue, play-calling patterns, and psychological factors can influence both success probabilities and decision preferences. The way that we instead do this is through the average of plays, instead of seeing previous decisions that could influence the final 4th down play.
+
+	
+Another factor that coaches take into account when playcalling is the personnel on the field, both their own players on offense but also what players are on defense. Certain individual matchups may alter a coach's decision. For example a strong running back and offensive line could make short fourth down conversions more likely, leading to choosing to go for it more often, regardless of field position. Unfortunately, the scope of our model was unable to look into individual players and their effects on the team's expected points. Given enough time, expanding our simulations to account for the strengths and weaknesses of different NFL teams could grant further insight into answering our question. 
+
+
+Finally, our study is limited in how it can capture the situation surrounding a game. Coaches may make different decisions depending on when a game is played, as the end of the season and the playoffs generally hold higher stakes for the team than the first few weeks of the season. Decision making may also be affected by the records of division and conference rivals. Both of these factors could lead to either safer or riskier decision making, especially on fourth downs. With more time and access to further datasets, we may be able to take these factors into account. Our current model is built using regular season data, but incorporating data pulled from the playoffs into our study could better represent the stakes and pressure coaches are under when making key decisions. 
 
 
 
